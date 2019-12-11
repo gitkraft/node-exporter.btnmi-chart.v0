@@ -12,8 +12,7 @@ spec:
   template:
     metadata:
       {{- if .Values.podAnnotations }}
-      annotations:
-{{ toYaml .Values.podAnnotations | indent 8 }}
+      annotations: {{- include "node-exporter.tplValue" ( dict "value" .Values.podAnnotations "context" $) | nindent 8 }}
       {{- end }}
       labels: {{- include "node-exporter.labels" . | nindent 8 }}
         {{- if .Values.podLabels }}
@@ -60,11 +59,13 @@ spec:
               path: /
               port: metrics
 {{ toYaml .Values.readinessProbe | indent 12 }}
+          {{- if .Values.resources }}
           resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
           volumeMounts:
             - name: proc
               mountPath: /host/proc
-              readOnly:  true
+              readOnly: true
             - name: sys
               mountPath: /host/sys
               readOnly: true
@@ -79,28 +80,9 @@ spec:
       {{- if .Values.tolerations }}
       tolerations: {{- include "node-exporter.tplValue" (dict "value" .Values.tolerations "context" $) | nindent 8 }}
       {{- end }}
-      affinity:
-        {{- if .Values.nodeAffinity }}
-        nodeAffinity: {{- include "node-exporter.tplValue" (dict "value" .Values.nodeAffinity "context" $) | nindent 10 }}
-        {{- end }}
-        {{- if eq .Values.podAntiAffinity "hard" }}
-        podAntiAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - topologyKey: "kubernetes.io/hostname"
-            labelSelector:
-              matchLabels: {{- include "node-exporter.matchLabels" . | nindent 16 }}
-        {{- else if eq .Values.podAntiAffinity "soft" }}
-        podAntiAffinity:
-          preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 1
-            podAffinityTerm:
-              topologyKey: "kubernetes.io/hostname"
-              labelSelector:
-                matchLabels: {{- include "node-exporter.matchLabels" . | nindent 18 }}
-        {{- end }}
-        {{- if .Values.podAffinity }}
-        podAffinity: {{- include "node-exporter.tplValue" (dict "value" .Values.podAffinity "context" $) | nindent 10 }}
-        {{- end }}
+      {{- if .Values.affinity }}
+      affinity: {{- include "node-exporter.tplValue" (dict "value" .Values.affinity "context" $) | nindent 8 }}
+      {{- end }}
       volumes:
         - name: proc
           hostPath:
