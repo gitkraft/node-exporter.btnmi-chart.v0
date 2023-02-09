@@ -167,6 +167,7 @@ The command removes all the Kubernetes components associated with the chart and 
 | `serviceMonitor.jobLabel`                     | The name of the label on the target service to use as the job name in prometheus.                                                                                  | `""`                    |
 | `serviceMonitor.interval`                     | Scrape interval (use by default, falling back to Prometheus' default)                                                                                              | `""`                    |
 | `serviceMonitor.scrapeTimeout`                | Timeout after which the scrape is ended                                                                                                                            | `""`                    |
+| `serviceMonitor.basicAuth`                    | Use basic auth for scraping                                                                                                                                        | `{}`                    |
 | `serviceMonitor.selector`                     | ServiceMonitor selector labels                                                                                                                                     | `{}`                    |
 | `serviceMonitor.relabelings`                  | RelabelConfigs to apply to samples before scraping                                                                                                                 | `[]`                    |
 | `serviceMonitor.metricRelabelings`            | MetricRelabelConfigs to apply to samples before ingestion                                                                                                          | `[]`                    |
@@ -235,7 +236,7 @@ This version introduces `bitnami/common`, a [library chart](https://helm.sh/docs
 
 ## License
 
-Copyright &copy; 2022 Bitnami
+Copyright &copy; 2023 Bitnami
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
